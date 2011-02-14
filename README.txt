@@ -1,5 +1,5 @@
 Roboo - HTTP Robot Mitigator
-Copyright (C) 2011 Yuri Gushin
+Copyright (C) 2011 Yuri Gushin, Alex Behar
 
 
 Overview
