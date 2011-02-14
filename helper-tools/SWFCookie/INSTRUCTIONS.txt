@@ -1,0 +1,3 @@
+- Compile the project using the GET/POST sources in turn
+- Use a CWS->FWS flash format decompressor (http://zefonseca.com/cws2fws/) on the output .swf
+- Copy the hex output onto the Roboo flash response variables
