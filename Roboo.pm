@@ -61,9 +61,8 @@ sub handler ($) {
 # check if client IP is whitelisted
 sub whitelisted_network ($) {
     my $request = shift;
-
-    my @whitelisted_networks = ($settings->{whitelist} =~ /IP\(([^)]+)\)/g);
-    return (scalar @whitelisted_networks && match_ip($request->remote_addr, create_iprange_regexp(@whitelisted_networks)));
+    
+    return (defined $settings->{whitelisted_networks} && match_ip($request->remote_addr, $settings->{whitelisted_networks}));    
 }
 
 # check if client User-Agent value is whitelisted
@@ -71,8 +70,7 @@ sub whitelisted_useragent ($) {
     my $request = shift;
 
     if (defined $request->header_in('User-Agent')) {
-        my @whitelisted_useragents = ($settings->{whitelist} =~ /UA\('([^']+)'\)/g);
-        foreach my $UA (@whitelisted_useragents) {
+        foreach my $UA (@{$settings->{whitelisted_useragents}}) {
             if (index($UA, $request->header_in('User-Agent')) != -1) {
                 return 1;
             }
@@ -99,6 +97,10 @@ sub init ($) {
         $settings->{challenge_modes} = $request->variable('Roboo_challenge_modes') ? $request->variable('Roboo_challenge_modes') : 'SWF';
         $settings->{challenge_hash_input} = $request->variable('Roboo_challenge_hash_input') ? $request->variable('Roboo_challenge_hash_input') : $request->remote_addr;
         $settings->{whitelist} = $request->variable('Roboo_whitelist') ? $request->variable('Roboo_whitelist') : '';
+        # Generate whitelist arrays
+        my @whitelisted_networks = ($settings->{whitelist} =~ /IP\(([^)]+)\)/g);
+        $settings->{whitelisted_networks} = create_iprange_regexp(@whitelisted_networks) unless (not scalar @whitelisted_networks);
+        @{$settings->{whitelisted_useragents}} = ($settings->{whitelist} =~ /UA\('([^']+)'\)/g);
         # Generate random secret
         $settings->{secret} = makerandom(Size => 512, Strength => 1);
         # Get RANDBITS for get_timeseed
