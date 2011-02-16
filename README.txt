@@ -21,7 +21,7 @@ verified using the challenge/response mechanisms prior to proxying them to the p
 Such deep level of verification weeds out the larger percentage of HTTP robots which do not use real browsers
 or implement full browser stacks, resulting in the mitigation of various web threats:
     - HTTP Denial of Service tools - e.g. Low Orbit Ion Cannon 
-    - Vulnerability Scanning - e.g. Acunetix Web Vulnerability Scanner, Metasploit Pro
+    - Vulnerability Scanning - e.g. Acunetix Web Vulnerability Scanner, Metasploit Pro, Nessus
     - Web exploits
     - Spiders, Crawlers and other robotic evil
 
@@ -59,7 +59,7 @@ The following parameters may be configured to control the module:
 
 Installation
 ============
-Roboo was tested with the stable branch of Nginx - version 0.8.54.
+Roboo was tested with the stable branch of Nginx - version 0.8.54, compiled with perl, proxy and rewrite modules.
 
 It requires the following Perl modules to be installed:
     Crypt::Random

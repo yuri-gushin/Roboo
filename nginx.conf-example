@@ -7,16 +7,13 @@ events {
 }
 
 http {
-	perl_modules  /opt/local/share/nginx;
-    perl_require  Roboo.pm;
-    include     /opt/local/etc/nginx/mime.types;
+	perl_modules    /opt/local/share/nginx;
+    perl_require    Roboo.pm;
+    
+    include         /opt/local/etc/nginx/mime.types;
 	default_type	application/octet-stream;
 
-	log_format main
-		'$remote_addr - $remote_user [$time_local] '
-        	'"$request" $status $bytes_sent '
-		'"$http_referer" "$http_user_agent" '
-		'"$gzip_ratio"';
+	log_format main '$remote_addr - $remote_user [$time_local] "$request" $status $bytes_sent "$http_referer" "$http_user_agent" "$gzip_ratio"';
 									       
 	client_header_timeout	10m;
 	client_body_timeout     10m;
@@ -29,11 +26,12 @@ http {
 	request_pool_size		    4k;
 
 	gzip                off;
-	gzip_min_length 	1;
+	gzip_min_length 	0;
 	gzip_buffers	    4 8k;
 	gzip_types	        text/plain application/x-shockwave-flash text/css application/x-javascript text/xml application/xml application/xml+rss text/javascript;
     gzip_proxied        any;
-	output_buffers	    1 32k;
+	gzip_http_version   1.0;
+    output_buffers	    1 32k;
 	postpone_output	    1460;
 
 	sendfile	on;
@@ -46,27 +44,31 @@ http {
 
     server_tokens off;
     proxy_cache_path    /opt/local/share/nginx/cache    levels=1:2  keys_zone=cache:10m inactive=10m max_size=1000m;
-
+    
 	server {
 		listen		80;
 		server_name	_;
 		
         location / {
             perl Roboo::handler;
-            set $Roboo_challengetype   "JS,SWF,gzip";
-            set $Roboo_cookiename       "Anti-Robot";
-            set $Roboo_validitytime     30;
-
+            set $Roboo_challenge_modes      "SWF,gzip";         # SWF or JS, optionally gzip for encoding ("JS,gzip" or "SWF,gzip")
+            
+            # Defaults
+            #set $Roboo_cookie_name          "Anti-Robot";      # Cookie name used for challenge/response
+            #set $Roboo_validity_window      600;               # Authentication validity time window
+            #set $Roboo_whitelist            "IP(),UA('')";     # Whitelist - IP addresses or user-agents ("IP(123.123.123.0/24),UA('Googlebot'),IP(..),UA('..')")
+            #set $Roboo_challenge_hash_input $remote_addr;      # Advanced - challenge hash basis, can add $server_name$server_port$http_host$http_user_agent
+            
+            error_page 555 = @proxy;
             expires epoch;
 	    	add_header Last-Modified "";
-            if ($Roboo_challengetype ~ gzip) {
+            if ($Roboo_challenge_modes ~ gzip) {
                 gzip on;
             }
         }
 
-        location /proxy {
-            internal;
-            proxy_pass          http://www.radware.com;
+        location @proxy {
+            proxy_pass          http://example.com;
             proxy_set_header    X-Forwarded-For     $proxy_add_x_forwarded_for;
             proxy_set_header    Host    $host;
             proxy_cache         cache;
@@ -74,20 +76,4 @@ http {
             gzip                on;
         }
 	}
-
-
-##ssl portion
-	# server {
-	# 	listen		127.0.0.1:443;
-	# 	server_name	localhost;
-	# 	
-	# 	ssl on;
-	# 	ssl_certificate		/etc/ssl/nginx/nginx.pem;
-	# 	ssl_certificate_key	/etc/ssl/nginx/nginx.key;
-	# 	
-	# 	access_log	/var/log/nginx/localhost.ssl_access_log main;
-	# 	error_log	/var/log/nginx/localhost.ssl_error_log info;
-	# 
-	# 	root /var/www/localhost/htdocs;
-	# }
 }
