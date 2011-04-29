@@ -59,7 +59,7 @@ The following parameters may be configured to control the module:
 
 Installation
 ============
-Roboo was tested with the stable branch of Nginx - version 0.8.54, compiled with perl, proxy and rewrite modules.
+Roboo was tested with the stable branch of Nginx - version 1.0.0, compiled with perl, proxy and rewrite modules.
 
 It requires the following Perl modules to be installed:
     Crypt::Random
