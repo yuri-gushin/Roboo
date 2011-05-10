@@ -44,11 +44,14 @@ http {
 
     server_tokens off;
     proxy_cache_path    /opt/local/share/nginx/cache    levels=1:2  keys_zone=cache:10m inactive=10m max_size=1000m;
+
     
 	server {
 		listen		80;
 		server_name	_;
-		
+	    
+        access_log /dev/null;
+
         location / {
             perl Roboo::handler;
             set $Roboo_challenge_modes      "SWF,gzip";         # SWF or JS, optionally gzip for encoding ("JS,gzip" or "SWF,gzip")
@@ -65,6 +68,7 @@ http {
             if ($Roboo_challenge_modes ~ gzip) {
                 gzip on;
             }
+            access_log /var/log/nginx/challenged.log;
         }
 
         location @proxy {
@@ -74,6 +78,7 @@ http {
             proxy_cache         cache;
             proxy_cache_valid   5m;
             gzip                on;
+            access_log /var/log/nginx/verified.log;
         }
 	}
 }

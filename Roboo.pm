@@ -16,7 +16,7 @@
 
 
 package Roboo;
-our $VERSION = '0.60';
+our $VERSION = '0.65';
 
 use nginx;
 use warnings;
@@ -112,7 +112,7 @@ sub init ($) {
         # Get master process id
         $settings->{internal_masterpid} = getppid();
         # Generate/synchronize random secret
-        $settings->{internal_secret} = generate_secret();
+        $settings->{internal_secret} = generate_secret($request);
     }
 }
 
@@ -121,15 +121,16 @@ sub generate_cookie (@) {
     return sha1_hex(@_, get_timeseed());
 }
 
-sub generate_secret () {
+sub generate_secret ($) {
     use IPC::SysV qw(IPC_CREAT);
     use IPC::SharedMem;
+    my $request = shift;
 
     my $shared = IPC::SharedMem->new(13373, 128, IPC_CREAT | 0600) or die "Cannot interface with shared memory: $_";
     $shared->attach;
 
     if ($shared->read(0,128) !~ /^$settings->{internal_masterpid}:/s) {
-        my $secret = makerandom_octet(Length => 64, Strength => 1);
+        my $secret = $request->variable('Roboo_secret') ? $request->variable('Roboo_secret') : makerandom_octet(Length => 64, Strength => 1);            
         $shared->write("$settings->{internal_masterpid}:$secret",0,128);
     }
 
@@ -139,7 +140,7 @@ sub generate_secret () {
     return $shared;
 }
 
-sub get_secret ($) {
+sub get_secret () {
     $settings->{internal_secret}->read(0,128) =~ /^$settings->{internal_masterpid}:(.{64})/s;
 
     return $1;

@@ -56,6 +56,22 @@ The following parameters may be configured to control the module:
         "$remote_addr$http_user_agent" ensures a different challenge key is generated for every IP address + User-Agent,
         meaning different clients behind a NAT will be challenged and verified with different keys.
 
+    (Advanced)  Roboo_secret    - "<RANDOM STRING>"
+        - The secret is used for the challenge key computation and is by default regenerated on every Roboo (Nginx) invocation.
+        - It is possible to specify the secret as part of the configuration - use only when required, as setting this value
+        statically reduces the strength of the challenge key.
+        - Use case - when multiple Roboo servers are being used behind a load-balancer without persistence set up - since each
+        server produces a unique challenge key - the host will need to reauthenticate every time it reaches a different server.
+        Setting this value identically across an array of such Roboo servers will result in the generation of identical keys and
+        eliminate the key mismatch problems.
+        In order for multiple Roboo servers to produce the same challenge key, the following conditions must be met across all
+        servers:
+            - Roboo secret value - use the same long random string as input
+                * Change & synchronize the secret periodically (e.g. with cronjob)
+            - System time & validity window - ensure time is synchronized and the same Roboo_validity_window is configured
+            - Perl environment - ensure the same RANDBITS value was compiled into perl
+                * Verify by running: perl -MConfig -e 'print "$Config{randbits}\n";')
+
 
 Installation
 ============
