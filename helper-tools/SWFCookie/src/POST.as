@@ -28,8 +28,8 @@
 					<![CDATA[
 						function (cookie_name, cookie_value, cookie_validity) { 
 								document.cookie=cookie_name + '=' + cookie_value + '; max-age=' + cookie_validity + '; path=/';
-								document.response.action=window.location.pathname+window.location.search
-								document.response.submit();
+								document.response.action = window.location.pathname + window.location.search;
+								document.forms[0].submit();
 						}
 					]]>
 				</script> 

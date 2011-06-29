@@ -54,14 +54,15 @@ http {
 
         location / {
             perl Roboo::handler;
-            set $Roboo_challenge_modes      "SWF,gzip";         # SWF or JS, optionally gzip for encoding ("JS,gzip" or "SWF,gzip")
+            set $Roboo_challenge_modes      "SWF,gzip";             # SWF or JS, optionally gzip for encoding ("JS,gzip" or "SWF,gzip")
             
             # Defaults
-            #set $Roboo_cookie_name          "Anti-Robot";      # Cookie name used for challenge/response
-            #set $Roboo_validity_window      600;               # Authentication validity time window
-            #set $Roboo_whitelist            "IP(),UA('')";     # Whitelist - IP addresses or user-agents ("IP(123.123.123.0/24),UA('Googlebot'),IP(..),UA('..')")
-            #set $Roboo_challenge_hash_input $remote_addr;      # Advanced - challenge hash basis, can add $server_name$server_port$http_host$http_user_agent
-            
+            #set $Roboo_cookie_name             "Anti-Robot";           # Cookie name used for challenge/response
+            #set $Roboo_validity_window         600;                    # Authentication validity time window
+            #set $Roboo_whitelist               "IP(),UA(''),URI('')";  # Whitelist - IP addresses (CIDR), user-agents or URIs (PCRE)
+            #set $Roboo_charset                 "UTF-8";                # Charset used during challenge (for proper POST resubmissions)
+            #set $Roboo_challenge_hash_input    $remote_addr;           # Advanced - challenge hash basis, can add $server_name$server_port$http_host$http_user_agent
+
             error_page 555 = @proxy;
             expires epoch;
 	    	add_header Last-Modified "";

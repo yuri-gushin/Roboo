@@ -36,8 +36,8 @@ Configuration
 The following parameters may be configured to control the module:
 
     Roboo_challenge_modes   -   "SWF,gzip":
-        - "JS" or "SWF" for pure Javascript-based challenge or flash + javascript challenge.  If Roboo is used behind a site
-        with flash content - it is advised on using this verification type for maximum security.
+        - "JS" or "SWF" for pure Javascript-based challenge or flash + javascript challenge.  If Roboo is used behind a
+        site with flash content - it is advised on using this verification type for maximum security.
         - ",gzip" to enable gzip compression of the chosen challenge type
     
     Roboo_cookie_name       -   "Anti-Robot"
@@ -45,32 +45,38 @@ The following parameters may be configured to control the module:
 
     Roboo_validity_window   -   600
         - Validity window in seconds for the challenge/response key - when expired, client will be re-challenged
+        - When set to zero - the validity per authenticated host will persist until Roboo is restarted
     
-    Roboo_whitelist         -   "UA('Googlebot'),IP(127.0.0.0/8)"
-        - UA('string') syntax whitelists a user-agent string
+    Roboo_whitelist         -   "UA('Googlebot'),IP(127.0.0.0/8),URI('^/ajax/')"
+        - UA('pcre_string') and URI('pcre_string') syntax whitelists a user-agent or URI string using PCRE
         - IP(0.0.0.0/0) syntax whitelists a CIDR network
 
+    Roboo_charset           -   "UTF-8"
+        - The character set to use during the challenge - so POST challenges that resubmit data use the correct encoding
+
     (Advanced)  Roboo_challenge_hash_input  -   $remote_addr (client IP address)
-        - Sets the input to the challenge hash function producing the key - the default should be fine for most environments,
-        if deeper verification resolution is desired more variables can be added.  For example, changing it to 
-        "$remote_addr$http_user_agent" ensures a different challenge key is generated for every IP address + User-Agent,
-        meaning different clients behind a NAT will be challenged and verified with different keys.
+        - Sets the input to the challenge hash function producing the key - the default should be fine for most
+        environments, if deeper verification resolution is desired more variables can be added.  For example, changing 
+        it to "$remote_addr$http_user_agent" ensures a different challenge key is generated for every IP address +
+        User-Agent, meaning different clients behind a NAT will be challenged and verified with different keys.
 
     (Advanced)  Roboo_secret    - "<RANDOM STRING>"
-        - The secret is used for the challenge key computation and is by default regenerated on every Roboo (Nginx) invocation.
-        - It is possible to specify the secret as part of the configuration - use only when required, as setting this value
-        statically reduces the strength of the challenge key.
-        - Use case - when multiple Roboo servers are being used behind a load-balancer without persistence set up - since each
-        server produces a unique challenge key - the host will need to reauthenticate every time it reaches a different server.
-        Setting this value identically across an array of such Roboo servers will result in the generation of identical keys and
-        eliminate the key mismatch problems.
-        In order for multiple Roboo servers to produce the same challenge key, the following conditions must be met across all
-        servers:
+        - The secret is used for the challenge key computation and is by default regenerated on every Roboo (Nginx)
+        invocation.
+        - It is possible to specify the secret as part of the configuration - use only when required, as setting this
+        value statically reduces the strength of the challenge key.
+        - Use case - when multiple Roboo servers are being used behind a load-balancer without persistence set up -
+        since each server produces a unique challenge key - the host will need to reauthenticate every time it reaches a
+        different server.
+        Setting this value identically across an array of such Roboo servers will result in the generation of identical
+        keys and eliminate the key mismatch problems.
+        In order for multiple Roboo servers to produce the same challenge key, the following conditions must be met
+        across all servers:
             - Roboo secret value - use the same long random string as input
                 * Change & synchronize the secret periodically (e.g. with cronjob)
             - System time & validity window - ensure time is synchronized and the same Roboo_validity_window is configured
             - Perl environment - ensure the same RANDBITS value was compiled into perl
-                * Verify by running: perl -MConfig -e 'print "$Config{randbits}\n";')
+                * Verify by running: perl -MConfig -e 'print "$Config{randbits}\n";'
 
 
 Installation

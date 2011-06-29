@@ -5,9 +5,9 @@
     <movie disabled="False" />
     <movie input="" />
     <movie path="bin\cookie.swf" />
-    <movie fps="30" />
-    <movie width="100" />
-    <movie height="100" />
+    <movie fps="1" />
+    <movie width="1" />
+    <movie height="1" />
     <movie version="10" />
     <movie background="#FFFFFF" />
   </output>
@@ -66,7 +66,7 @@
   </library>
   <!-- Class files to compile (other referenced classes will automatically be included) -->
   <compileTargets>
-    <compile path="src\GET.as" />
+    <compile path="src\POST.as" />
   </compileTargets>
   <!-- Paths to exclude from the Project Explorer tree -->
   <hiddenPaths>
