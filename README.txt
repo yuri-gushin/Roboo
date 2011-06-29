@@ -52,7 +52,7 @@ The following parameters may be configured to control the module:
         - IP(0.0.0.0/0) syntax whitelists a CIDR network
 
     Roboo_charset           -   "UTF-8"
-        - The character set to use during the challenge - so POST challenges that resubmit data use the correct encoding
+        - The character set to use during the challenge - so POST challenges that resubmit data correctly
 
     (Advanced)  Roboo_challenge_hash_input  -   $remote_addr (client IP address)
         - Sets the input to the challenge hash function producing the key - the default should be fine for most
@@ -66,8 +66,8 @@ The following parameters may be configured to control the module:
         - It is possible to specify the secret as part of the configuration - use only when required, as setting this
         value statically reduces the strength of the challenge key.
         - Use case - when multiple Roboo servers are being used behind a load-balancer without persistence set up -
-        since each server produces a unique challenge key - the host will need to reauthenticate every time it reaches a
-        different server.
+        since each server produces a unique challenge key - the host will need to reauthenticate every time it reaches
+        a different server.
         Setting this value identically across an array of such Roboo servers will result in the generation of identical
         keys and eliminate the key mismatch problems.
         In order for multiple Roboo servers to produce the same challenge key, the following conditions must be met
