@@ -52,7 +52,7 @@ The following parameters may be configured to control the module:
         - IP(0.0.0.0/0) syntax whitelists a CIDR network
 
     Roboo_charset           -   "UTF-8"
-        - The character set to use during the challenge - so POST challenges that resubmit data correctly
+        - The character set to use during the challenge - so POST challenges resubmit data correctly
 
     (Advanced)  Roboo_challenge_hash_input  -   $remote_addr (client IP address)
         - Sets the input to the challenge hash function producing the key - the default should be fine for most
@@ -74,7 +74,8 @@ The following parameters may be configured to control the module:
         across all servers:
             - Roboo secret value - use the same long random string as input
                 * Change & synchronize the secret periodically (e.g. with cronjob)
-            - System time & validity window - ensure time is synchronized and the same Roboo_validity_window is configured
+            - System time & validity window - ensure time is synchronized and the same Roboo_validity_window is
+            configured
             - Perl environment - ensure the same RANDBITS value was compiled into perl
                 * Verify by running: perl -MConfig -e 'print "$Config{randbits}\n";'
 

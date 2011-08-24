@@ -149,7 +149,7 @@ sub generate_secret ($) {
     $shared->attach;
 
     if ($shared->read(0,128) !~ /^$settings->{internal_masterpid}:/s) {
-        my $secret = $request->variable('Roboo_secret') ? $request->variable('Roboo_secret') : makerandom_octet(Length => 64, Strength => 1);            
+        my $secret = $request->variable('Roboo_secret') ? $request->variable('Roboo_secret') : makerandom_octet(Length => 64, Strength => 0); 
         $shared->write("$settings->{internal_masterpid}:$secret",0,128);
     }
 
