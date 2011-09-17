@@ -262,6 +262,8 @@ sub post_data_decode ($) {
 
 sub post_body_to_form ($) {
     my $body = shift;
+    
+    return '' unless (defined $body);
 
     # recover POST data
     my $form_variables = '';    
