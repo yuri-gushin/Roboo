@@ -122,7 +122,7 @@ sub init ($) {
             my @whitelisted_networks = ($settings->{whitelist} =~ /IP\(([^)]+)\)/g);
             $settings->{whitelisted_networks} = create_iprange_regexp(@whitelisted_networks) unless (not scalar @whitelisted_networks);
             @{$settings->{whitelisted_useragents}} = ($settings->{whitelist} =~ /UA\('([^']+)'\)/g);
-            @{$settings->{whitelisted_uris}} = ($settings->{whitelist} =~ /URI\('([^']+)'\)/);
+            @{$settings->{whitelisted_uris}} = ($settings->{whitelist} =~ /URI\('([^']+)'\)/g);
         }
         # Get RANDBITS for get_timeseed
         use Config;
